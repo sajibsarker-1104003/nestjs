@@ -10,5 +10,6 @@ export class PostDto {
   @IsString()
   public content: string;
 
+  @IsString()
   public authorId: string;
 }

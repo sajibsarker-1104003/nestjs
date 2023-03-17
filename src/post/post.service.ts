@@ -6,8 +6,8 @@ import { PostDto } from './dto/post.dto';
 @Injectable()
 export class PostService {
   constructor(private prisma: PrismaService) {}
-  async CreatePost(dto: PostDto) {
-    const { title, content, authorId } = dto;
+  async CreatePost(createPostDto: PostDto) {
+    const { title, content, authorId } = createPostDto;
     const newPost = await this.prisma.post.create({
       data: { title, content, author: { connect: { id: authorId } } },
     });
@@ -20,20 +20,47 @@ export class PostService {
     };
   }
 
-  async signin(dto: PostDto) {
+  async updatePost(id: string, updatePostDto: PostDto) {
+    const { title, content, authorId } = updatePostDto;
+    const updatedPost = await this.prisma.post
+      .update({
+        where: { id },
+        data: { title, content, author: { connect: { id: authorId } } },
+      })
+      .catch((err) => console.log(err));
+
+    //console.log(updatedPost);
+
     return {
-      message: 'Signin was successfull',
+      message: 'Post updated successfully!!',
+      result: updatedPost,
     };
   }
-  async signout() {
+  async deletePost(id: string, deletePostDto: PostDto) {
+    const deletedPost = await this.prisma.post.delete({ where: { id } });
+
     return {
-      message: 'Signout was successfull',
+      message: 'Post was deleted!!',
+      result: deletedPost,
     };
   }
 
   async getAll() {
-    return {
-      message: 'get all',
-    };
+    const posts = await this.prisma.post.findMany({
+      include: {
+        author: true,
+      },
+    });
+    return posts;
+  }
+
+  async getPostById(id: string) {
+    const post = await this.prisma.post.findUnique({
+      where: { id },
+      include: {
+        author: true,
+      },
+    });
+    return post;
   }
 }

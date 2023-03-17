@@ -1,4 +1,12 @@
-import { Body, Controller, Post, Get } from '@nestjs/common';
+import {
+  Body,
+  Controller,
+  Post,
+  Put,
+  Get,
+  Param,
+  Delete,
+} from '@nestjs/common';
 import { PostService } from './post.service';
 import { PostDto } from './dto/post.dto';
 
@@ -7,22 +15,27 @@ export class PostController {
   constructor(private readonly postService: PostService) {}
 
   @Post('create')
-  signup(@Body() dto: PostDto) {
-    return this.postService.CreatePost(dto);
+  createPost(@Body() createPostDto: PostDto) {
+    return this.postService.CreatePost(createPostDto);
   }
 
-  @Post('signin')
-  signin(@Body() dto: PostDto) {
-    return this.postService.signin(dto);
+  @Put(':id')
+  updatePost(@Param('id') id: string, @Body() updatePostDto: PostDto) {
+    return this.postService.updatePost(id, updatePostDto);
   }
 
-  @Get('signout')
-  signout() {
-    return this.postService.signout();
+  @Delete(':id')
+  deletePost(@Param('id') id: string, @Body() deletePostDto: PostDto) {
+    return this.postService.deletePost(id, deletePostDto);
   }
 
   @Get('getall')
   getAll() {
     return this.postService.getAll();
+  }
+
+  @Get(':id')
+  async getPostById(@Param('id') id: string) {
+    return this.postService.getPostById(id);
   }
 }
