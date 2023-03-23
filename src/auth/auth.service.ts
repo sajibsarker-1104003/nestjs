@@ -84,4 +84,5 @@ export class AuthService {
     const payload = args;
     return this.jwt.signAsync(payload, { secret: jwtSecret });
   }
+  //some code here
 }
